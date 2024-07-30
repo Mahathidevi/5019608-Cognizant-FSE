@@ -1,0 +1,106 @@
+class Task {
+    int taskId;
+    String taskName;
+    String status;
+
+    public Task(int taskId, String taskName, String status) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.status = status;
+    }
+
+    public String toString() {
+        return "Task [ID=" + taskId + ", Name=" + taskName + ", Status=" + status + "]";
+    }
+}
+class TaskNode {
+    Task task;
+    TaskNode next;
+
+    public TaskNode(Task task) {
+        this.task = task;
+        this.next = null;
+    }
+}
+
+class TaskManagementSystem {
+    private TaskNode head;
+
+    // Add task
+    public void addTask(Task task) {
+        TaskNode newNode = new TaskNode(task);
+        if (head == null) {
+            head = newNode;
+        } else {
+            TaskNode current = head;
+            while (current.next != null) {
+                current = current.next;
+            }
+            current.next = newNode;
+        }
+    }
+
+    // Search task by ID
+    public Task searchTask(int taskId) {
+        TaskNode current = head;
+        while (current != null) {
+            if (current.task.taskId == taskId) {
+                return current.task;
+            }
+            current = current.next;
+        }
+        return null;
+    }
+
+    // Traverse tasks
+    public void traverseTasks() {
+        TaskNode current = head;
+        while (current != null) {
+            System.out.println(current.task);
+            current = current.next;
+        }
+    }
+
+    // Delete task by ID
+    public boolean deleteTask(int taskId) {
+        if (head == null) {
+            return false;
+        }
+
+        if (head.task.taskId == taskId) {
+            head = head.next;
+            return true;
+        }
+
+        TaskNode current = head;
+        while (current.next != null && current.next.task.taskId != taskId) {
+            current = current.next;
+        }
+
+        if (current.next == null) {
+            return false;
+        }
+
+        current.next = current.next.next;
+        return true;
+    }
+}
+public class Main {
+    public static void main(String[] args) {
+        TaskManagementSystem system = new TaskManagementSystem();
+        
+        system.addTask(new Task(1, "Design Module", "In Progress"));
+        system.addTask(new Task(2, "Implement Module", "Pending"));
+        system.addTask(new Task(3, "Test Module", "Pending"));
+
+        System.out.println("Traverse Tasks:");
+        system.traverseTasks();
+
+        System.out.println("\nSearch Task with ID 2:");
+        System.out.println(system.searchTask(2));
+
+        System.out.println("\nDelete Task with ID 2:");
+        system.deleteTask(2);
+        system.traverseTasks();
+    }
+}
